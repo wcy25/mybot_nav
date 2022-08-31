@@ -1,0 +1,55 @@
+<launch>
+    <arg  name="initial_pose_x"    default="0.0"/>
+    <arg  name="initial_pose_y"    default="0.0"/>
+    <arg  name="initial_pose_a"    default="0.0"/>
+    <node  pkg="amcl"  type="amcl" name="amcl" output="screen">
+
+        <!-- "整体过滤器参数 " -->        
+        <param name="min_particles"                                     value="2000"/>  <!-- "最小允许的粒子数 " -->
+        <param name="max_particles"                                    value="5000"/>  <!-- "允许的最大粒子数 " -->
+        <param name="kld_err"                                                  value="0.05"/>   <!-- "真实分布与估计分布之间的最大误差 " -->
+        <param name="kld_z"                                                      value="0.99"/> <!-- " 标准正太分位数" -->
+        <param name="update_min_d"                                  value="0.25"/>  <!-- "执行过滤器更新之前需要平移运动的距离 " -->
+        <param name="update_min_a"                                 value="0.2"/>    <!-- "在执行过滤器更新之前需要进行旋转运动 " -->
+        <param name="resample_interval"                          value="1"/>    <!-- "重采样前需要更新的过滤器次数 " -->
+        <param name="transform_tolerance"                     value="2.0"/> <!-- "允许的转换时间 " -->    
+        <param name="recovery_alpha_slow"                    value="0.0"/>  <!-- "慢速平均权重滤波器的指数衰减率 " -->
+        <param name="recovery_alpha_fast"                      value="0.0"/>    <!-- "快速平均权重滤波器的指数衰减率 " -->
+        <param name="initial_pose_x"                                   value="$(arg initial_pose_x)"/>  <!-- "初始位姿均值（x），用于初始化具有高斯分布的滤波器 " -->
+        <param name="initial_pose_y"                                   value="$(arg initial_pose_y)"/>  <!-- "初始位姿均值（y），用于初始化具有高斯分布的滤波器  " -->
+        <param name="initial_pose_a"                                  value="$(arg initial_pose_a)"/>   <!-- "初始位姿均值（yaw），用于初始化具有高斯分布的滤波器  " -->
+        <param name="gui_publish_rate"                            value="10"/>  <!-- "可视化扫描和路径信息的最大周期 " -->
+        <param name="save_pose_rate"                               value="0.5"/>    <!-- "储存最后估计的姿态和协方差到参数服务器的最大速率。此保存的姿势将在后续运行中用于初始化过滤器 " -->
+        <param name="use_map_topic"                                value="true"/>  <!-- "当设置为true时，AMCL将订阅地图主题，而不是通过服务调用来接收地图。 " -->
+        <param name="first_map_only"                                 value="false"/>    <!-- "当设置为true时，AMCL将只使用它订阅的第一个地图，而不是在每次收到新地图时更新 " -->
+
+        <!-- "激光模型参数 " -->
+        <param name="laser_min_range"                             value="-1.0"/>    <!-- "最小的扫描范围 " -->
+        <param name="laser_max_range"                            value="-1.0"/> <!-- "最大的扫描范围 " -->
+        <param name="laser_max_beams"                           value="90"/>    <!-- "更新过滤器时，每次扫描中使用多少光束 " -->
+        <param name="laser_z_hit"                                         value="0.95"/> <!-- "混合权重 " -->
+        <param name="laser_z_short"                                    value="0.05"/>   <!-- "混合权重 " -->
+        <param name="laser_z_max"                                      value="0.05"/>   <!-- "混合权重 " -->
+        <param name="laser_z_rand"                                     value="0.05"/>    <!-- "混合权重 " -->
+        <param name="laser_sigma_hit"                               value="0.2"/>   <!-- "高斯模型的标准差 " -->
+        <param name="laser_lambda_short"                      value="0.1"/> <!-- "指数衰减 " -->
+        <param name="laser_likelihood_max_dist"         value="2.0"/>   <!-- "在地图上进行障碍物膨胀的最大距离，用于似然场模型 " -->
+        <param name="laser_model_type"                         value="likelihood_field"/>   <!-- "要使用的模型 " -->
+
+
+        <!-- "里程计模型参数 " -->
+        <param name="odom_model_type"                     value="diff"/>    <!-- "算法模型 " -->
+        <param name="odom_alpha1"                                value="0.2"/>  <!-- "预期噪声 " -->
+        <param name="odom_alpha2"                                value="0.2"/>  <!-- "预期噪声 " -->
+        <param name="odom_alpha3"                                value="0.2"/>  <!--  "预期噪声" -->
+        <param name="odom_alpha4"                                value="0.2"/>  <!-- " 预期噪声" -->
+
+        <param name="odom_frame_id"                           value="odom"/>    <!-- "里程计框架 " -->
+        <param name="base_frame_id"                             value="base_footprint"/>    <!-- "底盘框架 " -->
+        <param name="global_frame_id"                          value="map"/>    <!-- "地图坐标系 " -->
+        <param name="tf_broadcast"                                  value="true"/>  <!-- "防止amcl发布全局框架和里程计框架之间的转换 " -->
+
+        <remap from="scan"                                                          to="/scan"/>    <!-- "激光框架 " -->
+    </node>
+</launch>
+

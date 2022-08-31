@@ -1,0 +1,36 @@
+footprint: [[0.2, 0.11],[-0.1, 0.11], [-0.1, -0.11], [0.2, -0.11]]
+
+static_layer:
+  enabled: true
+  unknown_cost_value: -1
+  lethal_cost_threshold: 100
+  map_topic: map
+  first_map_only: false
+  subscribe_to_updates: true
+  track_unknown_space: true 
+  use_maximum: false
+  trinary_costmap: true 
+
+obstacle_layer:
+  enabled: true 
+  observation_sources: laser_scan_senser
+  laser_scan_sensor:
+    topic: /scan
+    sensor_frams : /laser
+    date_type: LaserScan
+    clearing: true
+    marking: true 
+
+  obstacle_range: 2.0
+  raytrace_range: 3.0
+  track_unknown_space: true
+
+global_inflation_layer:
+  enabled: true
+  inflation_radius: 1.0
+  cost_scaling_factor: 2.0
+
+local_inflation_layer:
+  enabled: true
+  inflation_radius: 0.15
+  cost_scaling_factor: 5.0
